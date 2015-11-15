@@ -41,13 +41,12 @@
 #include "http_config.h"
 #include "http_protocol.h"
 #include "ap_config.h"
-#include "./include/libinjection.h"
+#include "include/libinjection.h"
 
 /* The sample content handler */
 static int sqli_handler(request_rec *r) {
-    sfilter state;
-    int issqli;
-    int isxss; 
+    int issqli = NULL;
+    int isxss = NULL; 
     size_t param = strlen(r->args);
 
     if (strcmp(r->handler, "sqli")) {
@@ -62,8 +61,7 @@ static int sqli_handler(request_rec *r) {
 
     if (r->args) {
         ap_rprintf(r, "Query string: %s\n", r->args);
-        libinjection_sqli_init(&state, r->args, param, FLAG_NONE);
-        issqli = libinjection_is_sqli(&state);
+        issqli = libinjection_sqli(r->args, param, NULL);
 
         if (issqli) {
             ap_rprintf(r, "SQL Injection detected\n");
