@@ -14,8 +14,8 @@ APACHECTL=apachectl
 
 #   additional defines, includes and libraries
 #DEFS=-Dmy_define=my_value
-#INCLUDES=-Imy/include/dir
-#LIBS=-Lmy/lib/dir -lmylib
+INCLUDES=-I ./include 
+LIBS=-L ./include
 
 #   the default target
 all: local-shared-build
@@ -29,7 +29,7 @@ clean:
 
 #   simple test
 test: reload
-	lynx -mime_header http://localhost/sqli
+	lynx -mime_header "http://localhost:90/sqli?a=-1' union select 1,database(),3,version()--"
 
 #   install and activate shared object by reloading Apache to
 #   force a reload of the shared object file
