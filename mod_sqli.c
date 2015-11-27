@@ -35,7 +35,7 @@
 #include "include/libinjection.h"
 
 static int sqli_handler(request_rec *r) {
-    char *unique_id = malloc (sizeof(char));
+    char *unique_id = (char *) malloc (sizeof(char));
     ap_set_content_type(r, "text/html");
 
     if (strcmp(r->handler, "sqli")) 
@@ -59,6 +59,7 @@ static int sqli_handler(request_rec *r) {
         if (isxss) 
             ap_rprintf(r, "XSS Injection detected\n");
     }
+    free(unique_id);
     return OK;
 }
 
