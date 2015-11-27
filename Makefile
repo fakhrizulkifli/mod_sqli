@@ -30,6 +30,7 @@ clean:
 #   simple test
 test: reload
 	lynx -mime_header "http://localhost:90/sqli?a=-1' union select 1,database(),3,version()--"
+	lynx -mime_header "http://localhost:90/sqli?a='><ScRipt>alert(document.domain)</ScRipt>"
 
 #   install and activate shared object by reloading Apache to
 #   force a reload of the shared object file

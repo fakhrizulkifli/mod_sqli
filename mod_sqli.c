@@ -35,7 +35,6 @@
 #include "include/libinjection.h"
 
 static int sqli_handler(request_rec *r) {
-    size_t param = strlen(r->args);
     char *unique_id = malloc (sizeof(char));
     ap_set_content_type(r, "text/html");
 
@@ -51,12 +50,12 @@ static int sqli_handler(request_rec *r) {
     if (r->args) {
         ap_rprintf(r, "Query string: %s\n", r->args);
       
-        int issqli = libinjection_sqli(r->args, param, unique_id);
+        int issqli = libinjection_sqli(r->args, (size_t) strlen(r->args), unique_id);
 
         if (issqli) 
             ap_rprintf(r, "SQL Injection detected\n");
 
-        int isxss = libinjection_xss(r->args, param);
+        int isxss = libinjection_xss(r->args, (size_t) strlen(r->args));
         if (isxss) 
             ap_rprintf(r, "XSS Injection detected\n");
     }
@@ -65,7 +64,9 @@ static int sqli_handler(request_rec *r) {
 
 static int log_handler(request_rec *r) {
 
-    // TODO: Logging
+    /*
+     * TODO: Logging 
+     */
     return DECLINED;
 }
 
