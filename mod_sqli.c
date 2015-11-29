@@ -35,7 +35,7 @@
 #include "include/libinjection.h"
 
 static int sqli_handler(request_rec *r) {
-    char *unique_id = (char *) malloc (sizeof(char));
+    char unique_id[8];
     ap_set_content_type(r, "text/html");
 
     if (strcmp(r->handler, "sqli")) 
