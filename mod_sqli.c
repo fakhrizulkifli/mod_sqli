@@ -59,7 +59,6 @@ static int sqli_handler(request_rec *r) {
         if (isxss) 
             ap_rprintf(r, "XSS Injection detected\n");
     }
-    free(unique_id);
     return OK;
 }
 
