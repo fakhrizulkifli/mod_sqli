@@ -14,18 +14,18 @@ APACHECTL=apachectl
 
 #   additional defines, includes and libraries
 #DEFS=-Dmy_define=my_value
-INCLUDES=-I ./include 
+INCLUDES=-I ./include
 LIBS=-L ./include
 
 #   the default target
 all: local-shared-build
 
-#   install the shared object file into Apache 
+#   install the shared object file into Apache
 install: install-modules-yes
 
 #   cleanup
 clean:
-	-rm -f mod_sqli.o mod_sqli.lo mod_sqli.slo mod_sqli.la 
+	-rm -f mod_sqli.o mod_sqli.lo mod_sqli.slo mod_sqli.la
 
 #   simple test
 test: reload

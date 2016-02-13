@@ -38,26 +38,32 @@ static int sqli_handler(request_rec *r) {
     char unique_id[8];
     ap_set_content_type(r, "text/html");
 
-    if (strcmp(r->handler, "sqli")) 
+    if (strcmp(r->handler, "sqli"))
         return DECLINED;
 
-    if (!strcmp(r->method, "POST")) 
+    if (!strcmp(r->method, "POST"))
         ap_rprintf(r, "POST'ed data: %s\n", r->args);
 
-    if (!strcmp(r->method, "GET")) 
+    if (!strcmp(r->method, "GET"))
         ap_rprintf(r, "GET'ed data: %s\n", r->args);
 
     if (r->args) {
         ap_rprintf(r, "Query string: %s\n", r->args);
-      
+
         int issqli = libinjection_sqli(r->args, (size_t) strlen(r->args), unique_id);
 
-        if (issqli) 
-            ap_rprintf(r, "SQL Injection detected\n");
+        if (issqli)
+        {
+            ap_rprintf(r, "SQL Injection detected\nUser-Agent: %s\nIP Address: %s\n", r->useragent_addr, r->useragent_ip);
+            return HTTP_NOT_FOUND;
+        }
 
         int isxss = libinjection_xss(r->args, (size_t) strlen(r->args));
-        if (isxss) 
-            ap_rprintf(r, "XSS Injection detected\n");
+        if (isxss)
+        {
+            ap_rprintf(r, "XSS Injection detected\nUser-Agent: %s\nIP Address: %s\n", r->useragent_addr, r->useragent_ip);
+            return HTTP_NOT_FOUND;
+        }
     }
     return OK;
 }
@@ -65,7 +71,7 @@ static int sqli_handler(request_rec *r) {
 static int log_handler(request_rec *r) {
 
     /*
-     * TODO: Logging 
+     * TODO: Logging
      */
     return DECLINED;
 }
@@ -75,7 +81,7 @@ static void sqli_register_hooks(apr_pool_t *p) {
 }
 
 module AP_MODULE_DECLARE_DATA sqli_module = {
-    STANDARD20_MODULE_STUFF, 
+    STANDARD20_MODULE_STUFF,
     NULL,                  /* create per-dir    config structures */
     NULL,                  /* merge  per-dir    config structures */
     NULL,                  /* create per-server config structures */
